@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "elusive-donator-impeding.ngrok-free.dev",
+    ".onrender.com",
 ]
 
 
