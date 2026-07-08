@@ -1,0 +1,31 @@
+.repo-card{
+    background:
+        rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:24px;
+
+    padding:25px;
+
+    transition:
+        all
+        0.3s
+        ease;
+
+    margin-bottom:20px;
+}
+
+.repo-card:hover{
+    transform:
+        translateY(-8px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(
+            99,
+            102,
+            241,
+            0.25
+        );
+}

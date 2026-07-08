@@ -8,10 +8,6 @@ function RepoCard({ repo }) {
             </p>
 
             <p>
-                Branch: {repo.default_branch}
-            </p>
-
-            <p>
                 ⭐ {repo.stargazers_count || 0} Stars
             </p>
         </div>

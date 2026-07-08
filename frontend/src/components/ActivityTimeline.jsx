@@ -30,8 +30,22 @@ function ActivityTimeline({ notifications }) {
 
                             <div className="timeline-content">
                                 <h4>
-                                    {item.event_type}
-                                </h4>
+{
+    item.event_type === "push"
+    ? "🚀 Push Event Received"
+
+    : item.event_type === "pull_request"
+    ? "🔀 Pull Request Opened"
+
+    : item.event_type === "issues"
+    ? "🐞 Issue Created"
+
+    : item.event_type === "repository"
+    ? "📦 Repository Connected"
+
+    : item.event_type
+}
+</h4>
 
                                 <p>
                                     {item.repository}
