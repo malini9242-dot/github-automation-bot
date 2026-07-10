@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "elusive-donator-impeding.ngrok-free.dev",
     ".onrender.com",
+     ".vercel.app",
 ]
 DEBUG = False
 
@@ -136,6 +137,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https:/github-automation-bot-ivory.vercel.app",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
