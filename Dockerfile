@@ -1,7 +1,7 @@
 # Single-stage Dockerfile: run Django backend and serve pre-built React frontend
 
 ### Backend runtime stage
-FROM python:3.11-slim
+FROM python:3.12-slim
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
