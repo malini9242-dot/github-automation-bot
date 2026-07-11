@@ -5,4 +5,5 @@ urlpatterns = [
     path("github/login/", views.github_login, name="github_login"),
     path("github/callback/", views.github_callback, name="github_callback"),
     path("profile/", views.profile, name="profile"),
+    path("logout/", views.logout, name="logout"),
 ]

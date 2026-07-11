@@ -2,12 +2,12 @@ import os
 from django.http import JsonResponse
 from .github_service import exchange_code_for_token, get_github_user
 from django.shortcuts import redirect
-from django.http import JsonResponse
 from .models import GitHubUser
-from accounts.github_service import (
-    create_webhook
-)
+from accounts.github_service import create_webhook
 from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from github_bot.models import Repository
+
 
 def github_login(request):
     print("GitHub Login Called")
@@ -73,23 +73,7 @@ def github_callback(request):
     },
 )
 
-    return JsonResponse({
-
-    "message": "Login Successful",
-
-    "user": {
-
-        "username": user.username,
-
-        "name": user.name,
-
-        "email": user.email,
-
-        "avatar": user.avatar_url,
-
-        "repositories": user.public_repos
-    }
-})
+    return redirect("/")
 
 
 def profile(request):
@@ -125,14 +109,21 @@ def connect_repository(request):
         "repo_id"
     )
 
-    repo = Repository.objects.get(
-        repo_id=repo_id
-    )
+    try:
+        repo = Repository.objects.get(
+            repo_id=repo_id
+        )
+    except Repository.DoesNotExist:
+        return Response({"error": "Repository not found"}, status=404)
 
-    webhook_url = (
-        "https://YOUR_NGROK_URL"
-        "/api/webhook/"
-    )
+    # Use environment variable if set, otherwise build it dynamically
+    webhook_url = os.getenv("WEBHOOK_BASE_URL")
+    if webhook_url:
+        if not webhook_url.endswith('/'):
+            webhook_url += '/'
+        webhook_url += 'api/webhook/'
+    else:
+        webhook_url = request.build_absolute_uri('/api/webhook/')
 
     response = create_webhook(
         repo.user.username,
@@ -142,7 +133,11 @@ def connect_repository(request):
     )
 
     repo.webhook_installed = True
-
     repo.save()
 
     return Response(response)
+
+@api_view(["POST"])
+def logout(request):
+    GitHubUser.objects.all().delete()
+    return Response({"message": "Logged out successfully"})

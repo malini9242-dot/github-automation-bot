@@ -16,14 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from django.http import JsonResponse
-def home(request):
-    return JsonResponse({
-        "message": "GitHub Automation Bot Backend is running successfully!"
-    })
+from django.views.generic import TemplateView
 
 urlpatterns = [
-    path("", home),
+    path("", TemplateView.as_view(template_name="index.html")),
     path('admin/', admin.site.urls),
     path('api/dashboard/', include('dashboard.urls')),
     path("api/auth/", include("accounts.urls")),
@@ -36,5 +32,7 @@ path(
     "api/webhook/",
     include("webhook.urls")
 ),
-path("api/notifications/", include("notifications.urls")),
+    path("api/notifications/", include("notifications.urls")),
+    path("api/rules/", include("rules.urls")),
 ]
+

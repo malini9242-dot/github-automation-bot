@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: github-automation-bot
+    env: docker
+    repo: malini-portfolio/github-automation-bot
+    branch: main
+    dockerfilePath: Dockerfile
+    startCommand: gunicorn backend.wsgi --bind 0.0.0.0:8000 --log-file -
+    plan: free
+    releaseCommand: python backend/manage.py migrate && python backend/manage.py collectstatic --noinput
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "your-app.onrender.com"
+      - key: SECRET_KEY
+        value: "__SET_ME_IN_RENDER_DASHBOARD__"
+      - key: DATABASE_URL
+        value: "__SET_ME_IN_RENDER_DASHBOARD__"

@@ -28,14 +28,12 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "elusive-donator-impeding.ngrok-free.dev",
-    ".onrender.com",
-     ".vercel.app",
-]
-DEBUG = False
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
+# Respect X-Forwarded-Proto header for HTTPS detection behind proxies (Render/Railway)
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 
 # Application definition
 
@@ -74,7 +72,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR.parent / "frontend" / "build"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -93,11 +91,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL")
-    )
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL)
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.mysql",
+            "NAME": "github_automation",
+            "USER": "root",
+            "PASSWORD": "admin",
+            "HOST": "localhost",
+            "PORT": "3306",
+        }
+    }
 
 
 # Password validation
@@ -137,9 +147,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https:/github-automation-bot-ivory.vercel.app",
+    "https://github-automation-bot-ivory.vercel.app",
 ]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# Serve the React `build` static files when present
+STATICFILES_DIRS = [BASE_DIR.parent / "frontend" / "build" / "static"]
 
 STATICFILES_STORAGE = (
     "whitenoise.storage.CompressedManifestStaticFilesStorage"

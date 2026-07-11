@@ -39,5 +39,11 @@ def repositories(request):
             }
         )
 
+    # Map the DB webhook status back onto the GitHub API items
+    db_repos = Repository.objects.filter(user=user)
+    webhook_map = {r.repo_id: r.webhook_installed for r in db_repos}
+    for repo in repos:
+        repo["webhook_installed"] = webhook_map.get(repo["id"], False)
+
     # Return repos to frontend
     return Response(repos)
