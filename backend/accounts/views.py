@@ -11,10 +11,14 @@ from github_bot.models import Repository
 
 def github_login(request):
     print("GitHub Login Called")
+    
+    # Dynamically build the redirect URI based on the current request domain and protocol
+    redirect_uri = request.build_absolute_uri('/api/auth/github/callback/')
+    
     github_url = (
         "https://github.com/login/oauth/authorize"
         f"?client_id={os.getenv('GITHUB_CLIENT_ID')}"
-        f"&redirect_uri={os.getenv('GITHUB_REDIRECT_URI')}"
+        f"&redirect_uri={redirect_uri}"
         "&scope=repo,user"
     )
     print(github_url)
