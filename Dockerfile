@@ -1,12 +1,4 @@
-# Multi-stage Dockerfile: build React frontend, then run Django backend
-
-### Frontend build stage
-FROM node:18 AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ ./
-RUN npm run build
+# Single-stage Dockerfile: run Django backend and serve pre-built React frontend
 
 ### Backend runtime stage
 FROM python:3.11-slim
@@ -24,11 +16,11 @@ RUN pip install -r backend/requirements.txt
 # Copy backend code
 COPY backend/ ./backend
 
-# Copy frontend build from builder
-COPY --from=frontend-builder /app/frontend/build ./frontend/build
+# Copy pre-built frontend build folder directly from repository
+COPY frontend/build ./frontend/build
 
 WORKDIR /app/backend
-# Collect static files (ignore failure if settings not fully configured yet)
+# Collect static files
 RUN python manage.py collectstatic --noinput || true
 
 EXPOSE 8000
